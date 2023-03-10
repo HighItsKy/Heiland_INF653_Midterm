@@ -5,27 +5,27 @@ header('Content-Type: application/json');*/
 header('Access-Control-Allow-Methods: DELETE');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 header('Content-Type: application/json');
-/*
+
 include_once '../../config/Database.php';
 include_once '../../models/Author.php';
 
 $database = new Database();
-$db = $database->connect();*/
+$db = $database->connect();
 
-//Instantiate blog post object
-$post = new Post($db);
+//Instantiate author object
+$author = new Author($db);
 
-//Get raw posted data
+//Get raw author data
 $data = json_decode(file_get_contents("php://input"));
 
-$post->id = $data->id;
+$author->id = $data->id;
 
-//Create post
-if($post->delete())
+//Create author
+if($author->delete())
 {
-    echo json_encode(array('message' => 'Post Deleted'));
+    echo json_encode(array('message' => 'Author Deleted'));
 }
 else
 {
-    echo json_encode(array('message' => 'Post Not Deleted'));
+    echo json_encode(array('message' => 'Author Not Deleted'));
 }

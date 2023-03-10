@@ -30,7 +30,7 @@ class Author{
     //Get single author
     public function seeSingleAuthor(){
         //Create query
-        $query = 'SELECT a.id, a.author FROM ' . $this->table . ' a WHERE a.id = ? LIMIT 0,1';
+        $query = 'SELECT a.id, a.author FROM ' . $this->table . ' a WHERE a.id = ?';
 
         //Prepare statement
         $stmt = $this->conn->prepare($query);
@@ -43,8 +43,10 @@ class Author{
 
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        
 		//Set props
-		$this->author = $row['author'];
+		    $this->author = $row['author'];
+        
     }
 
     //Create post

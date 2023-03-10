@@ -2,12 +2,12 @@
 /*//Header
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
-
+*/
 include_once '../../config/Database.php';
 include_once '../../models/Author.php';
 
 $database = new Database();
-$db = $database->connect();*/
+$db = $database->connect();
 
 //Instantiate author object
 $author = new Author($db);
@@ -16,7 +16,7 @@ $author = new Author($db);
 $author->id = isset($_GET['id']) ? $_GET['id'] : die();
 
 //Get author
-$author->read_single();
+$author->seeSingleAuthor();
 
 //Create array
 $author_arr = array(
