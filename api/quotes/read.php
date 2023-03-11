@@ -3,22 +3,22 @@
 //Header
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
-
+*/
 include_once '../../config/Database.php';
 include_once '../../models/Quote.php';
 
 $database = new Database();
-$db = $database->connect();*/
+$db = $database->connect();
 
 //Instantiate quote object
 $quote = new Quote($db);
 
 //Quote query
-$result = $quote->read();
+$result = $quote->seeQuotes();
 //Get row count
 $num = $result->rowCount();
 
-// Check if any posts
+// Check if any quotes
 if($num > 0){
 	//Quote array
 	$quote_arr = array();

@@ -18,7 +18,7 @@ $result = $author->seeAuthors();
 //Get row count
 $num = $result->rowCount();
 
-// Check if any posts
+// Check if any authors
 if($num > 0){
 	//Author array
 	$author_arr = array();

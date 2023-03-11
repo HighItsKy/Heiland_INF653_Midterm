@@ -3,12 +3,12 @@
 //Header
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
-
+*/
 include_once '../../config/Database.php';
 include_once '../../models/Category.php';
 
 $database = new Database();
-$db = $database->connect();*/
+$db = $database->connect();
 
 //Instantiate category object
 $category = new Category($db);
@@ -17,11 +17,11 @@ $category = new Category($db);
 $category->id = isset($_GET['id']) ? $_GET['id'] : die();
 
 //Get category
-$category->read_single();
+$category->seeSingleCategory();
 
 //Create array
 $category_arr = array(
-    'id' => $author->id, 
+    'id' => $category->id, 
     'category' => $category->category);
 
 //Make JSON

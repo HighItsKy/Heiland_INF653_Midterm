@@ -32,7 +32,7 @@ class Quote{
     //Get single author
     public function seeSingleQuote(){
         //Create query
-        $query = 'SELECT q.id, q.quote, q.author_id, q.category_id FROM ' . $this->table . ' q WHERE q.id = ? LIMIT 0,1';
+        $query = 'SELECT q.id, q.quote, q.author_id, q.category_id FROM ' . $this->table . ' q WHERE q.id = ?';
 
         //Prepare statement
         $stmt = $this->conn->prepare($query);

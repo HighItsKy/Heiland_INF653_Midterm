@@ -30,8 +30,7 @@ class Category{
     //Get single cetegory
     public function seeSingleCategory(){
         //Create query
-        $query = 'SELECT c.id, c.category FROM ' . $this->table . ' c WHERE c.id = ? LIMIT 0,1';
-
+        $query = 'SELECT c.id, c.category FROM ' . $this->table . ' c WHERE c.id = ?';
         //Prepare statement
         $stmt = $this->conn->prepare($query);
 
