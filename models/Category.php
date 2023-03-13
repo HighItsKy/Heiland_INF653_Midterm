@@ -44,6 +44,12 @@ class Category{
 
 		//Set props
         $this->category = $row['category'];
+
+        if($this->category === null){
+            echo json_encode(
+                array('message' => $this->id . ' Not found'));
+                exit();
+        }	
     }
 
     //Create post
