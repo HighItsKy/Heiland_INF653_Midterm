@@ -32,6 +32,7 @@ class Author{
         //Create query
         $query = 'SELECT a.id, a.author FROM ' . $this->table . ' a WHERE a.id = ?';
 
+        
         //Prepare statement
         $stmt = $this->conn->prepare($query);
 
@@ -43,9 +44,13 @@ class Author{
 
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        
-		//Set props
-		    $this->author = $row['author'];
+        $this->author  = $row['author'];
+
+        if($this->author === null){
+            echo json_encode(
+                array('message' => $this->id . ' Not found'));
+                exit();
+        }	
         
     }
 

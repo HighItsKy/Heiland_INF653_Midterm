@@ -13,7 +13,9 @@ $db = $database->connect();
 $author = new Author($db);
 
 //Get ID
-$author->id = isset($_GET['id']) ? $_GET['id'] : die();
+$author->id = isset($_GET['id']) ? $_GET['id'] :  die();
+
+
 
 //Get author
 $author->seeSingleAuthor();
