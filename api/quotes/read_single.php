@@ -14,9 +14,11 @@ $quote = new Quote($db);
 
 //Get ID
 $quote->id = isset($_GET['id']) ? $_GET['id'] : die();
+//print_r($quote);
 
 //Get quote
 $quote->seeSingleQuote();
+//print_r($quote);
 
 //Create array
 $quote_arr = array(
@@ -26,4 +28,4 @@ $quote_arr = array(
     'category_id' => $quote->category_id);
 
 //Make JSON
-print_r(json_encode($quote_arr));
+print_r(json_encode($quote->quote));

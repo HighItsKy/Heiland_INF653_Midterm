@@ -32,21 +32,32 @@ class Quote{
     //Get single author
     public function seeSingleQuote(){
         //Create query
-        $query = 'SELECT q.id, q.quote, q.author_id, q.category_id FROM ' . $this->table . ' q WHERE q.id = ?';
+        $query = 'SELECT q.id, q.quote, 
+        authors.id AS author_id, 
+        categories.id AS category_id
+        FROM ' . $this->table . ' q 
+        INNER JOIN authors ON q.author_id = authors.id 
+        INNER JOIN categories ON q.category_id = categories.id 
+        WHERE q.id = ?';
+    
 
         //Prepare statement
         $stmt = $this->conn->prepare($query);
 
         //Bind ID
-		$stmt->bindParam(1, $this->id);
+	    $stmt->bindParam(1, $this->id);
 
 		//Execute query
 		$stmt->execute();
 
+        //print_r($stmt);
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-		//Set props
-		$this->quote = $row['quote'];
+        //print_r($row);
+		
+        //Set props
+		//$this->quote = $row['quote'];
+        $this->quote = $row;
     }
 
     //Create post
