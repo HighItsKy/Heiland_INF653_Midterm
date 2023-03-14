@@ -43,13 +43,14 @@ class Category{
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 		//Set props
-        $this->category = $row['category'];
-
+      //  $this->category = $row['category'];
+        $this->category = $row;
+/* 
         if($this->category === null){
             echo json_encode(
                 array('message' => $this->id . ' Not found'));
                 exit();
-        }	
+        }	 */
     }
 
     //Create post

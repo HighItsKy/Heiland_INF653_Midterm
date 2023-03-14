@@ -19,10 +19,16 @@ $category->id = isset($_GET['id']) ? $_GET['id'] : die();
 //Get category
 $category->seeSingleCategory();
 
-//Create array
+/* //Create array
 $category_arr = array(
     'id' => $category->id, 
-    'category' => $category->category);
+    'category' => $category->category); */
 
-//Make JSON
-print_r(json_encode($category_arr));
+if($category->category === false){ //If no category is in the table
+    echo json_encode(
+        array('message' => $category->id . ' Not found'));
+}
+else{
+    //Make JSON
+    print_r(json_encode($category->category));
+}

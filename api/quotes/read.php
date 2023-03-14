@@ -28,13 +28,44 @@ if($num > 0){
 		extract($row);
 
 		$quote_item = array('id' => $id, 'quote' => $quote, 'author_id' => $author_id, 'category_id' => $category_id);
-
-		//Push to "data"
-		array_push($quote_arr['data'], $quote_item);
+	
+		if(isset($_GET['categoryId']) && isset($_GET['authorId'])){ //If there is a category ID and an author ID in the url, 
+			if($_GET['categoryId'] == $category_id && $_GET['authorId'] == $author_id){ //all quotes with the matching author AND category is outputted.
+				//Then push to "data"
+				array_push($quote_arr['data'], $quote_item);
+			}
+		}
+		else if(isset($_GET['authorId'])){ //If there is an author ID in the URL, 
+			if($_GET['authorId'] == $author_id){ //all entries with that author ID is outputted.
+				//Then Push to "data"
+				array_push($quote_arr['data'], $quote_item);
+			}
+		}
+		else if(isset($_GET['categoryId'])){ //If there is a category ID in the URL, 
+			if($_GET['categoryId'] == $category_id){ //all entries with that ID are outputted. 
+				//Then push to "data"
+				array_push($quote_arr['data'], $quote_item);
+			}
+		}
+		else if(!isset($_GET['authorId']) && !isset($_GET['categoryId'])){ //If there is no parameters in the URL, all quotes are outputted.
+			//Push to "data"
+			array_push($quote_arr['data'], $quote_item);
+		} 
 	}
 
-	//Turn to JSON & output
-	echo json_encode($quote_arr);
+	//Count how many quotes there are that were requested
+	$count = sizeof($quote_arr['data']);
+	//echo($count);
+
+	if($count > 0){ //If there is at least one quote that matched what was being requested
+		echo json_encode($quote_arr);	
+	}
+	else{
+		echo json_encode(
+			array('message' => 'No Quotes found'));
+	}
+	
+	
 }else{
 	echo json_encode(
 	array('message' => 'No Quotes found'));

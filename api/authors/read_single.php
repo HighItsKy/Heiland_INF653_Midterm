@@ -20,10 +20,16 @@ $author->id = isset($_GET['id']) ? $_GET['id'] :  die();
 //Get author
 $author->seeSingleAuthor();
 
-//Create array
+if($author->author === false){ //If no author is in the table
+    echo json_encode(
+        array('message' => $author->id . ' Not found'));
+}
+else{
+/* //Create array
 $author_arr = array(
     'id' => $author->id, 
     'author' => $author->author);
-
+ */
 //Make JSON
-print_r(json_encode($author_arr));
+print_r(json_encode($author->author));
+}

@@ -44,13 +44,14 @@ class Author{
 
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $this->author  = $row['author'];
-
-        if($this->author === null){
+        $this->author = $row;
+        // $this->author  = $row['author'];
+       
+        /* if($this->author === null){
             echo json_encode(
                 array('message' => $this->id . ' Not found'));
                 exit();
-        }	
+        }	 */
         
     }
 
