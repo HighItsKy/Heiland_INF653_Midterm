@@ -55,21 +55,45 @@ class Category{
 
     //Create post
     public function create(){
-        //Create query
-        $query = 'INSERT INTO ' . $this->table . ' (category) VALUES (:category)';
+        $temp = $this->category; //Holds the category wanting to be inserted
 
-        ///Prepare statement
+        $query = 'SELECT c.id, c.category FROM ' . $this->table . ' c WHERE c.category = ?';
+
+        //Prepare statement
         $stmt = $this->conn->prepare($query);
 
-        //Clean and bind data
-        $this->category = htmlspecialchars(strip_tags($this->category));
-        $stmt->bindParam(':category', $this->category);
+        //Bind ID
+		$stmt->bindParam(1, $this->category);
 
-        if($stmt->execute()){
-            return true;
-        }
-        else{
-            printf("Error: %s.\n", $stmt->error);
+		//Execute query
+		$stmt->execute();
+
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $this->category = $row;
+       
+        if($this->category === false){ //If the category is NOT already in the table: 
+            $this->category = $temp;
+
+            $query = 'INSERT INTO ' . $this->table . ' (category) VALUES (:category)';
+            
+            ///Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            //Clean and bind data
+            $this->category = htmlspecialchars(strip_tags($this->category));
+            $stmt->bindParam(':category', $this->category);
+
+            if($stmt->execute()){
+                return true;
+            }
+            else{
+                printf("Error: %s.\n", $stmt->error);
+                return false;
+            }
+        }	 
+        else{ //If the category IS is in the table, do nothing.
+            //echo("Test");
             return false;
         }
     }

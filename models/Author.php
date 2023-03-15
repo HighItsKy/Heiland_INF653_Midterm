@@ -57,14 +57,89 @@ class Author{
 
     //Create post
     public function create(){
-        //Create query
-        $query = 'INSERT INTO ' . $this->table . ' (author) VALUES (:author)';
+        /* //Create query
+        $query = 'INSERT INTO ' . $this->table . ' (author) SELECT ' . $this->author . 
+        ' WHERE NOT EXISTS(
+            SELECT a.author FROM ' . $this->table . ' a WHERE a.author = ?)'; 
+        print_r($query);  
 
         ///Prepare statement
         $stmt = $this->conn->prepare($query);
 
+        print_r($stmt);
+        
+       //Clean data
+		$this->author = htmlspecialchars(strip_tags($this->author));
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+		//Bind data
+		$stmt->bindParam(1, $this->author);
+        $stmt->bindParam(':id', $this->id);
+
+        if($stmt->execute()){
+			return true;
+		}
+		else{
+			printf("Error: %s.\n", $stmt->error);
+			return false;
+		} */
+
+        //Create query
+        //$query = 'INSERT INTO ' . $this->table . ' (author) VALUES (:author)';
+        
+        $temp = $this->author; //Holds the author wanting to be inserted
+
+        $query = 'SELECT a.id, a.author FROM ' . $this->table . ' a WHERE a.author = ?';
+
+        //Prepare statement
+        $stmt = $this->conn->prepare($query);
+
+        //Bind ID
+		$stmt->bindParam(1, $this->author);
+
+		//Execute query
+		$stmt->execute();
+
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $this->author = $row;
+        // $this->author  = $row['author'];
+       
+        if($this->author === false){ //If the author is NOT already in the table: 
+            $this->author = $temp;
+
+            $query = 'INSERT INTO ' . $this->table . ' (author) VALUES (:author)';
+            
+            ///Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            //Clean and bind data
+            $this->author = htmlspecialchars(strip_tags($this->author));
+            $stmt->bindParam(':author', $this->author);
+
+            if($stmt->execute()){
+                return true;
+            }
+            else{
+                printf("Error: %s.\n", $stmt->error);
+                return false;
+            }
+        }	 
+        else{ //If the author IS is in the table, do nothing.
+            //echo("Test");
+            return false;
+        }
+
+        /* $query = 'INSERT INTO '. $this->table . ' (author) 
+        SELECT (:author)
+        WHERE NOT EXISTS (
+          SELECT a.author FROM authors a WHERE a.author = (:author))';
+            //echo($query);
+        ///Prepare statement
+        $stmt = $this->conn->prepare($query);
+
         //Clean and bind data
-        $this->author = htmlspecialchars(strip_tags($this->author));
+        $this->category = htmlspecialchars(strip_tags($this->author));
         $stmt->bindParam(':author', $this->author);
 
         if($stmt->execute()){
@@ -73,7 +148,7 @@ class Author{
         else{
             printf("Error: %s.\n", $stmt->error);
             return false;
-        }
+        } */
     }
 
     //Update post
