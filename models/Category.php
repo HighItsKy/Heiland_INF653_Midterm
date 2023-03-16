@@ -101,50 +101,121 @@ class Category{
     //Update post
 	public function update()
 	{
-		//Create query
-		$query = 'UPDATE ' . $this->table . ' SET category = :category WHERE id = :id';
+        $temp = $this->category; //Holds the category wanting to be inserted
 
-		//Prepare statement
-		$stmt = $this->conn->prepare($query);
+        $query = 'SELECT c.id FROM ' . $this->table . ' c WHERE c.id = ?';
 
-		//Clean data
-		$this->category = htmlspecialchars(strip_tags($this->category));
-        $this->id = htmlspecialchars(strip_tags($this->id));
+        //Prepare statement
+        $stmt = $this->conn->prepare($query);
 
-		//Bind data
-		$stmt->bindParam(':category', $this->category);
-		$stmt->bindParam(':id', $this->id);
-		
-		if($stmt->execute()){
-			return true;
-		}
-		else{
-			printf("Error: %s.\n", $stmt->error);
-			return false;
-		}
+        //Bind ID
+		$stmt->bindParam(1, $this->id);
+
+		//Execute query
+		$stmt->execute();
+
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $this->category = $row;
+        //print_r($row);
+        if($this->category === false){ //If the category is NOT in the table: 
+            echo json_encode(
+                array('message' => 'category_id Not found'));
+            exit();
+        }
+        else{
+            $this->category = $temp;
+            //Create query
+            $query = 'UPDATE ' . $this->table . ' SET category = :category WHERE id = :id';
+
+            //Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            //Clean data
+            $this->category = htmlspecialchars(strip_tags($this->category));
+            $this->id = htmlspecialchars(strip_tags($this->id));
+
+            //Bind data
+            $stmt->bindParam(':category', $this->category);
+            $stmt->bindParam(':id', $this->id);
+            
+            if($stmt->execute()){
+                return true;
+            }
+            else{
+                printf("Error: %s.\n", $stmt->error);
+                return false;
+            }
+        }
 	}
 
     //Delete post
 	public function delete()
 	{
-		//Create query
-		$query = 'DELETE FROM ' . $this->table . ' WHERE id = :id';
+        $temp = $this->id; //Holds the category id wanting to be deleted
 
-		//Prepare statement
-		$stmt = $this->conn->prepare($query);
+        $query = 'SELECT c.id FROM ' . $this->table . ' c WHERE c.id = ?';
 
-		//Clean data
-		$this->id = htmlspecialchars(strip_tags($this->id));
+        //Prepare statement
+        $stmt = $this->conn->prepare($query);
 
-		//Bind data
-		$stmt->bindParam(':id', $this->id);
-		
-		if($stmt->execute()){
-			return true;
-		}
-		else{
-			printf("Error: %s.\n", $stmt->error);
-			return false;
-		}
+        //Bind ID
+		$stmt->bindParam(1, $this->id);
+
+		//Execute query
+		$stmt->execute();
+
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $this->id = $row;
+        //print_r($row);
+        if($this->id === false){ //If the category is NOT in the table: 
+            echo json_encode(
+                array('message' => 'category_id Not found'));
+            exit();
+        }
+        else{
+            $this->id = $temp;
+
+            //Create query
+		    $query = 'DELETE FROM quotes WHERE category_id = :id';
+
+		    //Prepare statement
+		    $stmt = $this->conn->prepare($query);
+
+		    //Clean data
+		    $this->id = htmlspecialchars(strip_tags($this->id));
+
+		    //Bind data
+		    $stmt->bindParam(':id', $this->id);
+        
+            if($stmt->execute()){
+                $this->id = $temp;
+                
+                //Create query
+                $query = 'DELETE FROM ' . $this->table . ' WHERE id = :id';
+
+                //Prepare statement
+                $stmt = $this->conn->prepare($query);
+
+                //Clean data
+                $this->id = htmlspecialchars(strip_tags($this->id));
+
+                //Bind data
+                $stmt->bindParam(':id', $this->id);
+                
+                if($stmt->execute()){
+                    return true;
+                }
+                else{
+                    printf("Error: %s.\n", $stmt->error);
+                    return false;
+                }
+		    }
+            else{
+                printf("Error: %s.\n", $stmt->error);
+                return false;
+            }	
+        }
 	}
 }

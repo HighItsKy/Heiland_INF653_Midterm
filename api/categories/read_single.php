@@ -26,7 +26,7 @@ $category_arr = array(
 
 if($category->category === false){ //If no category is in the table
     echo json_encode(
-        array('message' => $category->id . ' Not found'));
+        array('message' => 'category_id Not found'));
 }
 else{
     //Make JSON

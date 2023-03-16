@@ -18,14 +18,19 @@ $author = new Author($db);
 //Get raw author data
 $data = json_decode(file_get_contents("php://input"));
 
-$author->id = $data->id;
-
-//Create author
-if($author->delete())
-{
-    echo json_encode(array('message' => 'Author Deleted'));
+if(!get_object_vars($data) || !isset($data->id)){ //If there are no parameters
+    echo json_encode(array('message' => 'Missing Required Parameters'));
 }
-else
-{
-    echo json_encode(array('message' => 'Author Not Deleted'));
+else{
+    $author->id = $data->id;
+
+    //Create author
+    if($author->delete())
+    {
+        echo json_encode(array('message' => 'Author Deleted'));
+    }
+    else
+    {
+        echo json_encode(array('message' => 'Author Not Deleted'));
+    }
 }

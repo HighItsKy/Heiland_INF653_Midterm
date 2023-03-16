@@ -22,7 +22,7 @@ $author->seeSingleAuthor();
 
 if($author->author === false){ //If no author is in the table
     echo json_encode(
-        array('message' => $author->id . ' Not found'));
+        array('message' => 'author_id Not found'));
 }
 else{
 /* //Create array

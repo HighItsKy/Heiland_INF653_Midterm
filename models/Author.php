@@ -154,50 +154,121 @@ class Author{
     //Update post
 	public function update()
 	{
-		//Create query
-		$query = 'UPDATE ' . $this->table . ' SET author = :author WHERE id = :id';
+		$temp = $this->author; //Holds the author wanting to be updated
 
-		//Prepare statement
-		$stmt = $this->conn->prepare($query);
+        $query = 'SELECT a.id FROM ' . $this->table . ' a WHERE a.id = ?';
 
-		//Clean data
-		$this->author = htmlspecialchars(strip_tags($this->author));
-        $this->id = htmlspecialchars(strip_tags($this->id));
+        //Prepare statement
+        $stmt = $this->conn->prepare($query);
 
-		//Bind data
-		$stmt->bindParam(':author', $this->author);
-		$stmt->bindParam(':id', $this->id);
-		
-		if($stmt->execute()){
-			return true;
-		}
-		else{
-			printf("Error: %s.\n", $stmt->error);
-			return false;
-		}
-	}
+        //Bind ID
+		$stmt->bindParam(1, $this->id);
 
-    //Delete post
-	public function delete()
-	{
-		//Create query
-		$query = 'DELETE FROM ' . $this->table . ' WHERE id = :id';
+		//Execute query
+		$stmt->execute();
 
-		//Prepare statement
-		$stmt = $this->conn->prepare($query);
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-		//Clean data
-		$this->id = htmlspecialchars(strip_tags($this->id));
+        $this->author = $row;
+        //print_r($row);
+        if($this->author === false){ //If the author is NOT in the table: 
+            echo json_encode(
+                array('message' => 'author_id Not found'));
+            exit();
+        }
+        else{
+            $this->author = $temp;
+            //Create query
+            $query = 'UPDATE ' . $this->table . ' SET author = :author WHERE id = :id';
 
-		//Bind data
-		$stmt->bindParam(':id', $this->id);
-		
-		if($stmt->execute()){
-			return true;
-		}
-		else{
-			printf("Error: %s.\n", $stmt->error);
-			return false;
-		}
-	}
+            //Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            //Clean data
+            $this->author = htmlspecialchars(strip_tags($this->author));
+            $this->id = htmlspecialchars(strip_tags($this->id));
+
+            //Bind data
+            $stmt->bindParam(':author', $this->author);
+            $stmt->bindParam(':id', $this->id);
+            
+            if($stmt->execute()){
+                return true;
+            }
+            else{
+                printf("Error: %s.\n", $stmt->error);
+                return false;
+            }
+        }
+        }
+
+        //Delete post
+        public function delete()
+        {
+            $temp = $this->id; //Holds the author id wanting to be deleted
+
+            $query = 'SELECT a.id FROM ' . $this->table . ' a WHERE a.id = ?';
+
+            //Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            //Bind ID
+            $stmt->bindParam(1, $this->id);
+
+            //Execute query
+            $stmt->execute();
+
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $this->id = $row;
+            //print_r($row);
+            if($this->id === false){ //If the author is NOT in the table: 
+                echo json_encode(
+                    array('message' => 'author_id Not found'));
+                exit();
+            }
+            else{
+                $this->id = $temp;
+
+                //Create query
+                $query = 'DELETE FROM quotes WHERE author_id = :id';
+
+                //Prepare statement
+                $stmt = $this->conn->prepare($query);
+
+                //Clean data
+                $this->id = htmlspecialchars(strip_tags($this->id));
+
+                //Bind data
+                $stmt->bindParam(':id', $this->id);
+            
+                if($stmt->execute()){
+                    $this->id = $temp;
+                
+                    //Create query
+                    $query = 'DELETE FROM ' . $this->table . ' WHERE id = :id';
+
+                    //Prepare statement
+                    $stmt = $this->conn->prepare($query);
+
+                    //Clean data
+                    $this->id = htmlspecialchars(strip_tags($this->id));
+
+                    //Bind data
+                    $stmt->bindParam(':id', $this->id);
+                    
+                    if($stmt->execute()){
+                        return true;
+                    }
+                    else{
+                        printf("Error: %s.\n", $stmt->error);
+                        return false;
+                    }
+                }
+                else{
+                    printf("Error: %s.\n", $stmt->error);
+                    return false;
+                }	
+            }
+        }
 }
