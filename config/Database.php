@@ -2,6 +2,11 @@
 class Database{
 	//DB Params
 	private $conn; 
+	private $host;
+	private $port;
+	private $dbname;
+	private $username;
+	private $password;
 
 	public function __construct(){
 		$this->username = getenv('USERNAME');
