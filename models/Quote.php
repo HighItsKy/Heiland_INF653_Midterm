@@ -38,9 +38,17 @@ class Quote{
     //Get single author
     public function seeSingleQuote(){
         //Create query
-        $query = 'SELECT q.id, q.quote, 
+        /* $query = 'SELECT q.id, q.quote, 
         authors.id AS author_id, 
         categories.id AS category_id
+        FROM ' . $this->table . ' q 
+        INNER JOIN authors ON q.author_id = authors.id 
+        INNER JOIN categories ON q.category_id = categories.id 
+        WHERE q.id = ?'; */
+
+        $query = 'SELECT q.id, q.quote, 
+        authors.author, 
+        categories.category
         FROM ' . $this->table . ' q 
         INNER JOIN authors ON q.author_id = authors.id 
         INNER JOIN categories ON q.category_id = categories.id 
