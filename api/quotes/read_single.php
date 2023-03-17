@@ -29,7 +29,7 @@ $quote_arr = array(
 //Make JSON
 if($quote->quote === false){
     echo json_encode(
-        array('message' => 'No Quotes found'));
+        array('message' => 'No Quotes Found'));
 }
 else{
     print_r(json_encode($quote->quote));
