@@ -35,7 +35,7 @@ if($num > 0){
 	}
 
 	//Turn to JSON & output
-	echo json_encode($author_arr);
+	echo json_encode($author_arr['data']);
 }else{
 	echo json_encode(
 	array('message' => 'No Authors found'));
