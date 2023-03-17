@@ -118,6 +118,25 @@ class Author{
             $stmt->bindParam(':author', $this->author);
 
             if($stmt->execute()){
+                $this->author = $temp;
+
+                //Finds the newly inserted quote
+                $query = 'SELECT authors.id, authors.author FROM authors WHERE authors.author = ?';
+
+                //Prepare statement
+                $stmt = $this->conn->prepare($query);
+
+                //Bind ID
+                $stmt->bindParam(1, $this->author);
+                //Execute query
+                $stmt->execute();
+
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                $this->author = $row;
+
+                echo(json_encode($this->author));
+
                 return true;
             }
             else{
@@ -130,25 +149,6 @@ class Author{
             return false;
         }
 
-        /* $query = 'INSERT INTO '. $this->table . ' (author) 
-        SELECT (:author)
-        WHERE NOT EXISTS (
-          SELECT a.author FROM authors a WHERE a.author = (:author))';
-            //echo($query);
-        ///Prepare statement
-        $stmt = $this->conn->prepare($query);
-
-        //Clean and bind data
-        $this->category = htmlspecialchars(strip_tags($this->author));
-        $stmt->bindParam(':author', $this->author);
-
-        if($stmt->execute()){
-            return true;
-        }
-        else{
-            printf("Error: %s.\n", $stmt->error);
-            return false;
-        } */
     }
 
     //Update post

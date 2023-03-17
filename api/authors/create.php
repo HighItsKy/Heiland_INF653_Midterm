@@ -20,17 +20,14 @@ $author = new Author($db);
 //Get raw data
 $data = json_decode(file_get_contents("php://input"));
 
-if(!get_object_vars($data) || !isset($data->category)){ //If there are no parameters
+if(!get_object_vars($data) || !isset($data->author)){ //If there are no parameters
     echo json_encode(array('message' => 'Missing Required Parameters'));
 }
 else{
     $author->author = $data->author;
 
     //Create category
-    if($author->create()){
-        echo json_encode(array('message' => 'Author Created'));
-    }
-    else{
+    if(!$author->create()){
         echo json_encode(array('message' => 'Author Not Created'));
     }
 }
