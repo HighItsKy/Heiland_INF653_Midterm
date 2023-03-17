@@ -27,8 +27,9 @@ if($num > 0){
 	while($row = $result->fetch(PDO::FETCH_ASSOC)){
 		extract($row);
 
-		$quote_item = array('id' => $id, 'quote' => $quote, 'author_id' => $author_id, 'category_id' => $category_id);
-	
+		//$quote_item = array('id' => $id, 'quote' => $quote, 'author_id' => $author_id, 'category_id' => $category_id);
+		$quote_item = array('id' => $id, 'quote' => $quote, 'author' => $author, 'category' => $category);
+
 		if(isset($_GET['categoryId']) && isset($_GET['authorId'])){ //If there is a category ID and an author ID in the url, 
 			if($_GET['categoryId'] == $category_id && $_GET['authorId'] == $author_id){ //all quotes with the matching author AND category is outputted.
 				//Then push to "data"

@@ -18,7 +18,13 @@ class Quote{
     //Get quotes
     public function seeQuotes(){
         //Create query
-        $query = 'SELECT q.id, q.quote, q.author_id, q.category_id FROM ' . $this->table . ' q';
+        //$query = 'SELECT q.id, q.quote, q.author_id, q.category_id FROM ' . $this->table . ' q';
+        $query = 'SELECT q.id, q.quote, 
+        authors.author, 
+        categories.category
+        FROM ' . $this->table . ' q 
+        INNER JOIN authors ON q.author_id = authors.id 
+        INNER JOIN categories ON q.category_id = categories.id';
 
         //Prepare statement
         $stmt = $this->conn->prepare($query);
