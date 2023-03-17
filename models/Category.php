@@ -85,6 +85,25 @@ class Category{
             $stmt->bindParam(':category', $this->category);
 
             if($stmt->execute()){
+                $this->category = $temp;
+
+                //Finds the newly inserted quote
+                $query = 'SELECT categories.id, categories.category FROM categories WHERE categories.category = ?';
+
+                //Prepare statement
+                $stmt = $this->conn->prepare($query);
+
+                //Bind ID
+                $stmt->bindParam(1, $this->category);
+                //Execute query
+                $stmt->execute();
+
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                $this->category = $row;
+
+                echo(json_encode($this->category));
+
                 return true;
             }
             else{
