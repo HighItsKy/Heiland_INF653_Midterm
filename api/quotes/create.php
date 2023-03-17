@@ -28,10 +28,7 @@ else{
     $quote->category_id = $data->category_id;
 
     //Create quote
-    if($quote->create()){
-        echo json_encode(array('message' => 'Quote Created'));
-    }
-    else{
+    if(!$quote->create()){
         echo json_encode(array('message' => 'Quote Not Created'));
     }
 }

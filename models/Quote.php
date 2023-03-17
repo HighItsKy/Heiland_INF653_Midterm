@@ -145,7 +145,26 @@ class Quote{
                     $stmt->bindParam(':author_id', $this->author_id);
                     $stmt->bindParam(':category_id', $this->category_id);
 
+                   
                     if($stmt->execute()){
+                        $this->quote = $temp; 
+
+                    //Finds the newly inserted quote
+                    $query = 'SELECT quotes.id, quotes.quote, quotes.author_id, quotes.category_id FROM quotes WHERE quotes.quote = ?';
+
+                    //Prepare statement
+                    $stmt = $this->conn->prepare($query);
+
+                    //Bind ID
+		            $stmt->bindParam(1, $this->quote);
+                    //Execute query
+                    $stmt->execute();
+
+                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    $this->quote = $row;
+
+                    echo(json_encode($this->quote));
                         return true;
                     }
                     else{
