@@ -20,8 +20,8 @@ class Quote{
         //Create query
         //$query = 'SELECT q.id, q.quote, q.author_id, q.category_id FROM ' . $this->table . ' q';
         $query = 'SELECT q.id, q.quote, 
-        authors.author, 
-        categories.category
+        authors.author, authors.id AS author_id, 
+        categories.category, categories.id AS category_id
         FROM ' . $this->table . ' q 
         INNER JOIN authors ON q.author_id = authors.id 
         INNER JOIN categories ON q.category_id = categories.id';

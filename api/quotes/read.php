@@ -30,25 +30,25 @@ if($num > 0){
 		//$quote_item = array('id' => $id, 'quote' => $quote, 'author_id' => $author_id, 'category_id' => $category_id);
 		$quote_item = array('id' => $id, 'quote' => $quote, 'author' => $author, 'category' => $category);
 
-		if(isset($_GET['categoryId']) && isset($_GET['authorId'])){ //If there is a category ID and an author ID in the url, 
-			if($_GET['categoryId'] == $category_id && $_GET['authorId'] == $author_id){ //all quotes with the matching author AND category is outputted.
+		if(isset($_GET['category_id']) && isset($_GET['author_id'])){ //If there is a category ID and an author ID in the url, 
+			if($_GET['category_id'] == $category_id && $_GET['author_id'] == $author_id){ //all quotes with the matching author AND category is outputted.
 				//Then push to "data"
 				array_push($quote_arr['data'], $quote_item);
 			}
 		}
-		else if(isset($_GET['authorId'])){ //If there is an author ID in the URL, 
-			if($_GET['authorId'] == $author_id){ //all entries with that author ID is outputted.
+		else if(isset($_GET['author_id'])){ //If there is an author ID in the URL, 
+			if($_GET['author_id'] == $author_id){ //all entries with that author ID is outputted.
 				//Then Push to "data"
 				array_push($quote_arr['data'], $quote_item);
 			}
 		}
-		else if(isset($_GET['categoryId'])){ //If there is a category ID in the URL, 
-			if($_GET['categoryId'] == $category_id){ //all entries with that ID are outputted. 
+		else if(isset($_GET['category_id'])){ //If there is a category ID in the URL, 
+			if($_GET['category_id'] == $category_id){ //all entries with that ID are outputted. 
 				//Then push to "data"
 				array_push($quote_arr['data'], $quote_item);
 			}
 		}
-		else if(!isset($_GET['authorId']) && !isset($_GET['categoryId'])){ //If there is no parameters in the URL, all quotes are outputted.
+		else if(!isset($_GET['author_id']) && !isset($_GET['category_id'])){ //If there is no parameters in the URL, all quotes are outputted.
 			//Push to "data"
 			array_push($quote_arr['data'], $quote_item);
 		} 
