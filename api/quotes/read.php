@@ -59,7 +59,7 @@ if($num > 0){
 	//echo($count);
 
 	if($count > 0){ //If there is at least one quote that matched what was being requested
-		echo json_encode($quote_arr);	
+		echo json_encode($quote_arr['data']);	
 	}
 	else{
 		echo json_encode(
