@@ -32,4 +32,8 @@ else{
     if(!$quote->update()){
         echo json_encode(array('message' => 'Quote Not Updated'));
     }
+    else{
+        $array = array('id' => $data->id, 'quote' => $quote->quote, 'author_id' => $quote->author_id, 'category_id' => $quote->category_id);
+        echo(json_encode($array));
+    }
 }

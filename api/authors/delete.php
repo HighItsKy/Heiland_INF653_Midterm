@@ -26,11 +26,7 @@ else{
     $author->id = $data->id;
 
     //Create author
-    if($author->delete())
-    {
-        echo json_encode(array('message' => 'Author Deleted'));
-    }
-    else
+    if(!$author->delete())
     {
         echo json_encode(array('message' => 'Author Not Deleted'));
     }

@@ -76,48 +76,61 @@ class Quote{
 
     //Create post
     public function create(){
-        $temp = $this->quote; //Holds the quote wanting to be inserted
+        $tempQuote = $this->quote; //Holds the quote wanting to be inserted
+        $tempAuthorId= $this->author_id; //Holds the author id.
+        $tempCategoryId = $this->category_id; //Holds the category_id.
 
         //Checks if the quote's author exists in the table already
-        $query = 'SELECT authors.id FROM authors WHERE authors.id = ' . $this->author_id;
+        $query = 'SELECT authors.id, authors.author FROM authors WHERE authors.id = ?';
 
         //Prepare statement
         $stmt = $this->conn->prepare($query);
+
+        //Bind ID
+        $stmt->bindParam(1, $this->author_id);
 
         //Execute query
         $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $this->author = $row;
+        $this->author_id = $row;
 
-        if($this->author === false){ //If the author is NOT already in the table: 
+        if($this->author_id === false){ //If there is no author already in the table: 
             echo json_encode(array('message' => 'author_id Not Found'));
             exit();
         }
         else{ //If the author is already in the table, then the category is checked next
-            $this->quote = $temp;
+            $this->quote = $tempQuote;
+            $this->author_id = $tempAuthorId;
+            $this->category_id = $tempCategoryId;
+
             //Checks if the quote's author exists in the table already
-            $query = 'SELECT categories.id FROM categories WHERE categories.id = ' . $this->category_id;
+            $query = 'SELECT categories.id, categories.category FROM categories WHERE categories.id = ?';
 
             //Prepare statement
             $stmt = $this->conn->prepare($query);
+
+            //Bind ID
+            $stmt->bindParam(1, $this->category_id);
 
             //Execute query
             $stmt->execute();
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $this->author = $row;
+            $this->category_id = $row;
             
-            if($this->author === false){ //If the category is NOT already in the table: 
+            if($this->category_id === false){ //If the category is NOT already in the table: 
                 echo json_encode(array('message' => 'category_id Not Found'));
                 exit();
             }
-            else{
-                $this->quote = $temp;
+            else{ //Now, it checks to see if the quote is already in the table.
+                $this->quote = $tempQuote;
+                $this->author_id = $tempAuthorId;
+                $this->category_id = $tempCategoryId;
 
-                $query = 'SELECT q.quote FROM ' . $this->table . ' q  WHERE q.quote = ?';
+                $query = 'SELECT q.quote, q.id FROM ' . $this->table . ' q  WHERE q.quote = ?';
 
                 //Prepare statement
                 $stmt = $this->conn->prepare($query);
@@ -133,7 +146,10 @@ class Quote{
                 $this->quote = $row;
             
                 if($this->quote === false){ //If the quote is NOT already in the table: 
-                    $this->quote = $temp;
+                    $this->quote = $tempQuote;
+                    $this->author_id = $tempAuthorId;
+                    $this->category_id = $tempCategoryId;
+
                     $query = 'INSERT INTO ' . $this->table . ' (quote, author_id, category_id) VALUES (:quote, :author_id, :category_id)';
             
                     ///Prepare statement
@@ -148,10 +164,12 @@ class Quote{
                     $stmt->bindParam(':category_id', $this->category_id);
 
                    
-                    if($stmt->execute()){
-                        $this->quote = $temp; 
+                    if($stmt->execute()){ //If the quote was successfully added:
+                        $this->quote = $tempQuote; 
+                        $this->author_id = $tempAuthorId;
+                        $this->category_id = $tempCategoryId;
 
-                        //Finds the newly inserted quote
+                        //Find the newly inserted quote
                         $query = 'SELECT quotes.id, quotes.quote, quotes.author_id, quotes.category_id FROM quotes WHERE quotes.quote = ?';
 
                         //Prepare statement
@@ -165,12 +183,13 @@ class Quote{
                         
                         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                        $this->id = $row['id'];
-
-                        $array = array('id' => '' . $this->id . '', 'quote' => $this->quote, 'author_id' => $this->author_id, 'category_id' => $this->category_id);
-                        echo(json_encode($array));
-
                         $this->quote = $row;
+                        //$this->id = $row['id'];
+                        //$array = array('id' => $this->id, 'quote' => $this->quote, 'author_id' => $this->author_id, 'category_id' => $this->category_id);
+                        //echo(json_encode($array));
+                        echo(json_encode($this->quote));
+
+                        
 
                         //echo(json_encode($this->quote));
 
@@ -306,8 +325,8 @@ class Quote{
 
                         $this->quote = $row;
 
-                        echo(json_encode($this->quote));                       
-                        
+                        $array = array('id' => $this->id, 'quote' => $this->quote, 'author_id' => $this->author_id, 'category_id' => $this->category_id);
+                        echo(json_encode($array));
                         return true;
                     }
                     else{
