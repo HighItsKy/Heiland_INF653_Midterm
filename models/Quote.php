@@ -162,12 +162,19 @@ class Quote{
                         //Execute query
                         $stmt->execute();
 
+                        
                         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                        $this->id = $row['id'];
+
+                        $array = array('id' => '' . $this->id . '', 'quote' => $this->quote, 'author_id' => $this->author_id, 'category_id' => $this->category_id);
+                        echo(json_encode($array));
 
                         $this->quote = $row;
 
-                        echo(json_encode($this->quote));
-                            return true;
+                        //echo(json_encode($this->quote));
+
+                        return true;
                     }
                     else{
                         return false;
@@ -350,7 +357,10 @@ class Quote{
             //Bind data
             $stmt->bindParam(':id', $this->id);
             
+            
             if($stmt->execute()){
+                $array = array('id' => $this->id);
+                echo(json_encode($array));
                 return true;
             }
             else{

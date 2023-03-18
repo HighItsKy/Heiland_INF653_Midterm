@@ -26,11 +26,7 @@ else{
     $quote->id = $data->id;
 
     //Create post
-    if($quote->delete())
-    {
-        echo json_encode(array('message' => 'Quote Deleted'));
-    }
-    else
+    if(!$quote->delete())
     {
         echo json_encode(array('message' => 'Quote Not Deleted'));
     }
