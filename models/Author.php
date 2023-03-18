@@ -193,6 +193,24 @@ class Author{
             $stmt->bindParam(':id', $this->id);
             
             if($stmt->execute()){
+                $this->author = $temp;
+
+                //Finds the newly inserted quote
+                $query = 'SELECT authors.id, authors.author FROM authors WHERE authors.author = ?';
+
+                //Prepare statement
+                $stmt = $this->conn->prepare($query);
+
+                //Bind ID
+                $stmt->bindParam(1, $this->author);
+                //Execute query
+                $stmt->execute();
+
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                $this->author = $row;
+
+                echo(json_encode($this->author));
                 return true;
             }
             else{
@@ -200,7 +218,7 @@ class Author{
                 return false;
             }
         }
-        }
+    }
 
         //Delete post
         public function delete()

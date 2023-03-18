@@ -29,10 +29,7 @@ else{
     $author->author = $data->author;
 
     //Update post
-    if($author->update()){
-        echo json_encode(array('message' => 'Author Updated'));
-    }
-    else{
+    if(!$author->update()){
         echo json_encode(array('message' => 'Author Not Updated'));
     }
 }
