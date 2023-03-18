@@ -28,11 +28,7 @@ $category->id = $data->id;
 $category->category = $data->category;
 
 //Update post
-if($category->update())
-{
-    echo json_encode(array('message' => 'Category Updated'));
-}
-else
+if(!$category->update())
 {
     echo json_encode(array('message' => 'Category Not Updated'));
 }
