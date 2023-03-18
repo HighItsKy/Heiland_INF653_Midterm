@@ -149,23 +149,23 @@ class Quote{
                     if($stmt->execute()){
                         $this->quote = $temp; 
 
-                    //Finds the newly inserted quote
-                    $query = 'SELECT quotes.id, quotes.quote, quotes.author_id, quotes.category_id FROM quotes WHERE quotes.quote = ?';
+                        //Finds the newly inserted quote
+                        $query = 'SELECT quotes.id, quotes.quote, quotes.author_id, quotes.category_id FROM quotes WHERE quotes.quote = ?';
 
-                    //Prepare statement
-                    $stmt = $this->conn->prepare($query);
+                        //Prepare statement
+                        $stmt = $this->conn->prepare($query);
 
-                    //Bind ID
-		            $stmt->bindParam(1, $this->quote);
-                    //Execute query
-                    $stmt->execute();
+                        //Bind ID
+                        $stmt->bindParam(1, $this->quote);
+                        //Execute query
+                        $stmt->execute();
 
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                    $this->quote = $row;
+                        $this->quote = $row;
 
-                    echo(json_encode($this->quote));
-                        return true;
+                        echo(json_encode($this->quote));
+                            return true;
                     }
                     else{
                         printf("Error: %s.\n", $stmt->error);
@@ -188,7 +188,53 @@ class Quote{
         $tempAuthorId = $this->author_id; //Holds the author id wanting to be updated
         $tempCategoryId = $this->category_id; //Holds the category id wanting to be updated
 
-        //Checks to see if the id exists in the table
+        //Checks if the author exists in the table
+        $query = 'SELECT authors.id FROM authors WHERE authors.id = ' . $this->author_id;
+
+        //Prepare statement
+        $stmt = $this->conn->prepare($query);
+
+        //Execute query
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $this->author = $row;
+
+        if($this->author === false){ //If the author is NOT in the table: 
+            echo json_encode(array('message' => 'author_id Not Found'));
+            exit();
+        }
+        else{ //If the author is in the table:
+            //If the author is in the table:
+            $this->quote = $tempQuote; 
+            $this->id = $tempId; 
+            $this->author_id = $tempAuthorId; 
+            $this->category_id = $tempCategoryId; 
+                
+            //Checks if the quote's author exists in the table already
+            $query = 'SELECT categories.id FROM categories WHERE categories.id = ' . $this->category_id;
+
+            //Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            //Execute query
+            $stmt->execute();
+
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $this->author = $row;
+            
+            if($this->author === false){ //If the category is NOT already in the table: 
+                echo json_encode(array('message' => 'category_id Not Found'));
+                exit();
+            }
+            else{ 
+                $this->quote = $tempQuote; 
+            $this->id = $tempId; 
+            $this->author_id = $tempAuthorId; 
+            $this->category_id = $tempCategoryId; 
+                    //Checks to see if the id exists in the table
         $query = 'SELECT q.id FROM ' . $this->table . ' q  WHERE q.id = ?';
 
         //Prepare statement
@@ -214,86 +260,40 @@ class Quote{
             exit();
         }
         else{
-            $this->quote = $tempQuote; 
-            $this->id = $tempId; 
-            $this->author_id = $tempAuthorId; 
-            $this->category_id = $tempCategoryId; 
-
-            //Checks if the author exists in the table
-            $query = 'SELECT authors.id FROM authors WHERE authors.id = ' . $this->author_id;
-
-            //Prepare statement
-            $stmt = $this->conn->prepare($query);
-
-            //Execute query
-            $stmt->execute();
-
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            $this->author = $row;
-
-            if($this->author === false){ //If the author is NOT in the table: 
-                echo json_encode(array('message' => 'author_id Not Found'));
-                exit();
-            }
-            else{ //If the author is in the table:
+                //The category id, author id, and quote id are all valid. Time to update that quote!
                 $this->quote = $tempQuote; 
                 $this->id = $tempId; 
                 $this->author_id = $tempAuthorId; 
                 $this->category_id = $tempCategoryId; 
-                    
-                //Checks if the quote's author exists in the table already
-                $query = 'SELECT categories.id FROM categories WHERE categories.id = ' . $this->category_id;
+                
+                //Create query
+                $query = 'UPDATE ' . $this->table . ' SET quote = :quote, author_id = :author_id, category_id = :category_id WHERE id = :id';
 
                 //Prepare statement
                 $stmt = $this->conn->prepare($query);
 
-                //Execute query
-                $stmt->execute();
+                //Clean data
+                $this->quote = htmlspecialchars(strip_tags($this->quote));
+                $this->author_id = htmlspecialchars(strip_tags($this->author_id));
+                $this->category_id = htmlspecialchars(strip_tags($this->category_id));
+                $this->id = htmlspecialchars(strip_tags($this->id));
 
-                $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                $this->author = $row;
-                
-                if($this->author === false){ //If the category is NOT already in the table: 
-                    echo json_encode(array('message' => 'category_id Not Found'));
-                    exit();
+                //Bind data
+                $stmt->bindParam(':quote', $this->quote);
+                $stmt->bindParam(':author_id', $this->author_id);
+                $stmt->bindParam(':category_id', $this->category_id);
+                $stmt->bindParam(':id', $this->id);
+                if($stmt->execute()){
+                    return true;
                 }
-                else{ 
-                    //The category id, author id, and quote id are all valid. Time to update that quote!
-                    $this->quote = $tempQuote; 
-                    $this->id = $tempId; 
-                    $this->author_id = $tempAuthorId; 
-                    $this->category_id = $tempCategoryId; 
-                    
-                    //Create query
-                    $query = 'UPDATE ' . $this->table . ' SET quote = :quote, author_id = :author_id, category_id = :category_id WHERE id = :id';
-
-                    //Prepare statement
-                    $stmt = $this->conn->prepare($query);
-
-                    //Clean data
-                    $this->quote = htmlspecialchars(strip_tags($this->quote));
-                    $this->author_id = htmlspecialchars(strip_tags($this->author_id));
-                    $this->category_id = htmlspecialchars(strip_tags($this->category_id));
-                    $this->id = htmlspecialchars(strip_tags($this->id));
-
-                    //Bind data
-                    $stmt->bindParam(':quote', $this->quote);
-                    $stmt->bindParam(':author_id', $this->author_id);
-                    $stmt->bindParam(':category_id', $this->category_id);
-                    $stmt->bindParam(':id', $this->id);
-                    if($stmt->execute()){
-                        return true;
-                    }
-                    else{
-                        printf("Error: %s.\n", $stmt->error);
-                        return false;
-                    }
-                }    
-            }    
-        }	
-	}
+                else{
+                    printf("Error: %s.\n", $stmt->error);
+                    return false;
+                }
+            }
+        }
+    }
+}
 
     //Delete post
 	public function delete()

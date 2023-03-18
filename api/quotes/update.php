@@ -29,7 +29,7 @@ else{
     $quote->category_id = $data->category_id;
 
     //Update quote
-    if($quote->create()){
+    if($quote->update()){
         echo json_encode(array('message' => 'Quote Updated'));
     }
     else{
