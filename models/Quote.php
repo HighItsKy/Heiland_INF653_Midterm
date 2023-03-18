@@ -100,7 +100,7 @@ class Quote{
             echo json_encode(array('message' => 'author_id Not Found'));
             exit();
         }
-        else{ //If the author is already in the table, then the category is checked next
+        else{ //If the author is already in the table, then the category is checked 
             $this->quote = $tempQuote;
             $this->author_id = $tempAuthorId;
             $this->category_id = $tempCategoryId;
@@ -150,6 +150,7 @@ class Quote{
                     $this->author_id = $tempAuthorId;
                     $this->category_id = $tempCategoryId;
 
+                    //The new quote is inserted
                     $query = 'INSERT INTO ' . $this->table . ' (quote, author_id, category_id) VALUES (:quote, :author_id, :category_id)';
             
                     ///Prepare statement
@@ -187,9 +188,7 @@ class Quote{
                         //$this->id = $row['id'];
                         //$array = array('id' => $this->id, 'quote' => $this->quote, 'author_id' => $this->author_id, 'category_id' => $this->category_id);
                         //echo(json_encode($array));
-                        echo(json_encode($this->quote));
-
-                        
+                        echo(json_encode($this->quote)); //Output the new quote
 
                         //echo(json_encode($this->quote));
 
@@ -207,64 +206,68 @@ class Quote{
 	public function update()
 	{
         $tempQuote = $this->quote; //Holds the quote wanting to be updated
-        $tempId = $this->id; //Holds the id wanting to be updated
         $tempAuthorId = $this->author_id; //Holds the author id wanting to be updated
         $tempCategoryId = $this->category_id; //Holds the category id wanting to be updated
+        $tempId = $this->id;
 
         //Checks if the author exists in the table
-        $query = 'SELECT authors.id FROM authors WHERE authors.id = ' . $this->author_id;
+        $query = 'SELECT authors.id FROM authors WHERE authors.id = ?';
 
         //Prepare statement
         $stmt = $this->conn->prepare($query);
+
+        //Bind ID
+        $stmt->bindParam(1, $this->author_id);
 
         //Execute query
         $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $this->author = $row;
+        $this->author_id = $row;
 
-        if($this->author === false){ //If the author is NOT in the table: 
+        if($this->author_id === false){ //If the author id is NOT in the table: 
             echo json_encode(array('message' => 'author_id Not Found'));
             exit();
         }
         else{ //If the author is in the table:
-            //If the author is in the table:
             $this->quote = $tempQuote; 
-            $this->id = $tempId; 
             $this->author_id = $tempAuthorId; 
             $this->category_id = $tempCategoryId; 
+            $this->id = $tempId; 
                 
-            //Checks if the quote's author exists in the table already
-            $query = 'SELECT categories.id FROM categories WHERE categories.id = ' . $this->category_id;
+            //Checks if the category exists in the table already
+            $query = 'SELECT categories.id FROM categories WHERE categories.id = ?';
 
             //Prepare statement
             $stmt = $this->conn->prepare($query);
+
+            //Bind ID
+            $stmt->bindParam(1, $this->category_id);
 
             //Execute query
             $stmt->execute();
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $this->author = $row;
+            $this->category_id = $row;
             
-            if($this->author === false){ //If the category is NOT already in the table: 
+            if($this->category_id === false){ //If the category is NOT already in the table: 
                 echo json_encode(array('message' => 'category_id Not Found'));
                 exit();
             }
-            else{ 
+            else{ //If the category exists in the table
                 $this->quote = $tempQuote; 
-                $this->id = $tempId; 
                 $this->author_id = $tempAuthorId; 
                 $this->category_id = $tempCategoryId; 
+                $this->id = $tempId; 
                 
-                //Checks to see if the id exists in the table
+                //Checks to see if the quote id exists in the table
                 $query = 'SELECT q.id FROM ' . $this->table . ' q  WHERE q.id = ?';
 
                 //Prepare statement
                 $stmt = $this->conn->prepare($query);
 
-                
                 //Bind ID
                 $stmt->bindParam(1, $this->id);
 
@@ -283,11 +286,11 @@ class Quote{
                 else{
                     //The category id, author id, and quote id are all valid. Time to update that quote!
                     $this->quote = $tempQuote; 
-                    $this->id = $tempId; 
                     $this->author_id = $tempAuthorId; 
                     $this->category_id = $tempCategoryId; 
+                    $this->id = $tempId; 
                     
-                    //Create query
+                    //Update the quote
                     $query = 'UPDATE ' . $this->table . ' SET quote = :quote, author_id = :author_id, category_id = :category_id WHERE id = :id';
 
                     //Prepare statement
@@ -304,13 +307,14 @@ class Quote{
                     $stmt->bindParam(':author_id', $this->author_id);
                     $stmt->bindParam(':category_id', $this->category_id);
                     $stmt->bindParam(':id', $this->id);
-                    if($stmt->execute()){
+
+                    if($stmt->execute()){ //If the quote was successfully updated
                         $this->quote = $tempQuote; 
-                        $this->id = $tempId; 
                         $this->author_id = $tempAuthorId; 
                         $this->category_id = $tempCategoryId; 
+                        $this->id = $tempId; 
 
-                        //Finds the newly inserted quote
+                        //Finds the newly updated quote
                         $query = 'SELECT quotes.id, quotes.quote, quotes.author_id, quotes.category_id FROM quotes WHERE quotes.quote = ?';
 
                         //Prepare statement
@@ -318,6 +322,7 @@ class Quote{
 
                         //Bind ID
                         $stmt->bindParam(1, $this->quote);
+                        
                         //Execute query
                         $stmt->execute();
 
@@ -325,8 +330,7 @@ class Quote{
 
                         $this->quote = $row;
 
-                        $array = array('id' => $this->id, 'quote' => $this->quote, 'author_id' => $this->author_id, 'category_id' => $this->category_id);
-                        echo(json_encode($array));
+                        echo(json_encode($this->quote)); //Output the row corresponding to that quote
                         return true;
                     }
                     else{
@@ -343,6 +347,7 @@ class Quote{
 	{
         $temp = $this->id; //Holds the quote id wanting to be deleted
 
+        //Looks to see if the quote is in the table
         $query = 'SELECT q.id FROM ' . $this->table . ' q  WHERE q.id = ?';
 
         //Prepare statement
@@ -358,13 +363,14 @@ class Quote{
 
         $this->id = $row;
        
-        if($this->id === false){ //If the quote is NOT already in the table: 
+        if($this->id === false){ //If the quote is NOT in the table: 
             echo json_encode(array('message' => 'No Quotes Found'));
                 exit();
         }
-        else{
+        else{ //If the quote is in the table
             $this->id = $temp;
-            //Create query
+
+            //That quote is now deleted
             $query = 'DELETE FROM ' . $this->table . ' WHERE id = :id';
 
             //Prepare statement
@@ -376,8 +382,7 @@ class Quote{
             //Bind data
             $stmt->bindParam(':id', $this->id);
             
-            
-            if($stmt->execute()){
+            if($stmt->execute()){ //If the deletion was successful, then the id of the quote is outputted
                 $array = array('id' => $this->id);
                 echo(json_encode($array));
                 return true;

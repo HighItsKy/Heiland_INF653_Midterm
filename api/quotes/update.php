@@ -1,7 +1,5 @@
 <?php
-/*//Header 
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');*/
+//Header 
 header('Access-Control-Allow-Methods: PUT');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 header('Content-Type: application/json');
@@ -31,9 +29,5 @@ else{
     //Update quote
     if(!$quote->update()){
         echo json_encode(array('message' => 'Quote Not Updated'));
-    }
-    else{
-        $array = array('id' => $data->id, 'quote' => $quote->quote, 'author_id' => $quote->author_id, 'category_id' => $quote->category_id);
-        echo(json_encode($array));
     }
 }

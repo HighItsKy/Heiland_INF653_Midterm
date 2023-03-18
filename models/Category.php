@@ -57,6 +57,7 @@ class Category{
     public function create(){
         $temp = $this->category; //Holds the category wanting to be inserted
 
+        //Searches the categories table to see if the category exists
         $query = 'SELECT c.id, c.category FROM ' . $this->table . ' c WHERE c.category = ?';
 
         //Prepare statement
@@ -72,7 +73,7 @@ class Category{
 
         $this->category = $row;
        
-        if($this->category === false){ //If the category is NOT already in the table: 
+        if($this->category === false){ //If the category is NOT already in the table, insert it: 
             $this->category = $temp;
 
             $query = 'INSERT INTO ' . $this->table . ' (category) VALUES (:category)';
@@ -84,7 +85,7 @@ class Category{
             $this->category = htmlspecialchars(strip_tags($this->category));
             $stmt->bindParam(':category', $this->category);
 
-            if($stmt->execute()){
+            if($stmt->execute()){ //If that successfully added to the table, then new entry is selected and outputted
                 $this->category = $temp;
 
                 //Finds the newly inserted quote
@@ -122,6 +123,7 @@ class Category{
 	{
         $temp = $this->category; //Holds the category wanting to be inserted
 
+        //Checks to see if the category already exists in the table
         $query = 'SELECT c.id FROM ' . $this->table . ' c WHERE c.id = ?';
 
         //Prepare statement
@@ -142,7 +144,7 @@ class Category{
                 array('message' => 'category_id Not found'));
             exit();
         }
-        else{
+        else{ //Otherwise, the table will change the category's name 
             $this->category = $temp;
             //Create query
             $query = 'UPDATE ' . $this->table . ' SET category = :category WHERE id = :id';
@@ -158,7 +160,7 @@ class Category{
             $stmt->bindParam(':category', $this->category);
             $stmt->bindParam(':id', $this->id);
             
-            if($stmt->execute()){
+            if($stmt->execute()){ //If the category updated successfully, then the row's new value is outputted
                 $this->category = $temp;
 
                 //Finds the newly inserted category
@@ -191,6 +193,7 @@ class Category{
 	{
         $temp = $this->id; //Holds the category id wanting to be deleted
 
+        //Checks to see if the category exists in the table
         $query = 'SELECT c.id FROM ' . $this->table . ' c WHERE c.id = ?';
 
         //Prepare statement
@@ -211,7 +214,7 @@ class Category{
                 array('message' => 'category_id Not found'));
             exit();
         }
-        else{
+        else{ //If the category exists, all quotes with that same category are deleted
             $this->id = $temp;
 
             //Create query
@@ -226,7 +229,7 @@ class Category{
 		    //Bind data
 		    $stmt->bindParam(':id', $this->id);
         
-            if($stmt->execute()){
+            if($stmt->execute()){ //After all quotes with that category are deleted, the category is then deleted
                 $this->id = $temp;
                 
                 //Create query
@@ -241,7 +244,7 @@ class Category{
                 //Bind data
                 $stmt->bindParam(':id', $this->id);
                 
-                if($stmt->execute()){
+                if($stmt->execute()){ //Outputs the id of the category 
                     $array = array('id' => $this->id);
                     echo(json_encode($array));
                     return true;

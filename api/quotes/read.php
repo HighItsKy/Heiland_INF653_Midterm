@@ -1,9 +1,5 @@
 <?php
-/*
 //Header
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
-*/
 include_once '../../config/Database.php';
 include_once '../../models/Quote.php';
 
@@ -65,8 +61,6 @@ if($num > 0){
 		echo json_encode(
 			array('message' => 'No Quotes found'));
 	}
-	
-	
 }else{
 	echo json_encode(
 	array('message' => 'No Quotes found'));

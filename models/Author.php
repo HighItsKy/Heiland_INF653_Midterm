@@ -32,7 +32,6 @@ class Author{
         //Create query
         $query = 'SELECT a.id, a.author FROM ' . $this->table . ' a WHERE a.id = ?';
 
-        
         //Prepare statement
         $stmt = $this->conn->prepare($query);
 
@@ -57,33 +56,6 @@ class Author{
 
     //Create post
     public function create(){
-        /* //Create query
-        $query = 'INSERT INTO ' . $this->table . ' (author) SELECT ' . $this->author . 
-        ' WHERE NOT EXISTS(
-            SELECT a.author FROM ' . $this->table . ' a WHERE a.author = ?)'; 
-        print_r($query);  
-
-        ///Prepare statement
-        $stmt = $this->conn->prepare($query);
-
-        print_r($stmt);
-        
-       //Clean data
-		$this->author = htmlspecialchars(strip_tags($this->author));
-        $this->id = htmlspecialchars(strip_tags($this->id));
-
-		//Bind data
-		$stmt->bindParam(1, $this->author);
-        $stmt->bindParam(':id', $this->id);
-
-        if($stmt->execute()){
-			return true;
-		}
-		else{
-			printf("Error: %s.\n", $stmt->error);
-			return false;
-		} */
-
         //Create query
         //$query = 'INSERT INTO ' . $this->table . ' (author) VALUES (:author)';
         
@@ -176,7 +148,7 @@ class Author{
                 array('message' => 'author_id Not found'));
             exit();
         }
-        else{
+        else{ //Otherwise, update the table
             $this->author = $temp;
             //Create query
             $query = 'UPDATE ' . $this->table . ' SET author = :author WHERE id = :id';
@@ -192,7 +164,7 @@ class Author{
             $stmt->bindParam(':author', $this->author);
             $stmt->bindParam(':id', $this->id);
             
-            if($stmt->execute()){
+            if($stmt->execute()){ //And then SELECT that quote, and output the id and author
                 $this->author = $temp;
 
                 //Finds the newly inserted quote
@@ -245,7 +217,7 @@ class Author{
                     array('message' => 'author_id Not found'));
                 exit();
             }
-            else{
+            else{ //Otherwise, delete all quotes with that author
                 $this->id = $temp;
 
                 //Create query
@@ -260,7 +232,7 @@ class Author{
                 //Bind data
                 $stmt->bindParam(':id', $this->id);
             
-                if($stmt->execute()){
+                if($stmt->execute()){ //Then if that executes, delete the author from the authors table
                     $this->id = $temp;
                 
                     //Create query
@@ -275,7 +247,7 @@ class Author{
                     //Bind data
                     $stmt->bindParam(':id', $this->id);
                     
-                    if($stmt->execute()){
+                    if($stmt->execute()){ //If that is deleted successfully, then the id and its value is output
                         $array = array('id' => $this->id);
                         echo(json_encode($array));
                         return true;

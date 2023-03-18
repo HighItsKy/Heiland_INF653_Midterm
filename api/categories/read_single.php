@@ -1,9 +1,5 @@
 <?php
-/*
 //Header
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
-*/
 include_once '../../config/Database.php';
 include_once '../../models/Category.php';
 
@@ -19,14 +15,9 @@ $category->id = isset($_GET['id']) ? $_GET['id'] : die();
 //Get category
 $category->seeSingleCategory();
 
-/* //Create array
-$category_arr = array(
-    'id' => $category->id, 
-    'category' => $category->category); */
-
+//Create array
 if($category->category === false){ //If no category is in the table
-    echo json_encode(
-        array('message' => 'category_id Not Found'));
+    echo json_encode(array('message' => 'category_id Not Found'));
 }
 else{
     //Make JSON
