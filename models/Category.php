@@ -242,6 +242,8 @@ class Category{
                 $stmt->bindParam(':id', $this->id);
                 
                 if($stmt->execute()){
+                    $array = array('id' => $this->id);
+                    echo(json_encode($array));
                     return true;
                 }
                 else{
